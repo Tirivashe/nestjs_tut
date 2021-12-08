@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './database/models/user.model';
 import { CreateUserDTO, UpdateUserDTO } from './user.dto';
@@ -23,6 +23,7 @@ export class UserService {
 
   async deleteUserById(id: number): Promise<void>{
     const user = await this.UserModel.findOne({ where: { id } })
+    if(!user) throw new NotFoundException()
     await user.destroy()
   }
 

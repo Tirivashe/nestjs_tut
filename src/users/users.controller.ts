@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { User } from './database/models/user.model';
 import { CreateUserDTO, UpdateUserDTO } from './user.dto';
 import { UserService } from './users.service';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private readonly userService: UserService) {}
 
@@ -40,13 +41,5 @@ export class UsersController {
   async deleteUserById(@Param('id', ParseIntPipe) id: number): Promise<void>{
     return await this.userService.deleteUserById(id)
   }
-
-
-  //LOGIN IMPLEMENTATION
-    @UseGuards(LocalAuthGuard)
-    @Post('auth/login')
-    async login(@Request() req: any){
-      return req.user
-    }
   
 }
